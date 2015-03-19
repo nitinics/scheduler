@@ -1,5 +1,5 @@
 # Scheduler
-Scheduler Algorithm (initially written as a part of the SLEEP protocol) - the energy efficient codewords with varying duty cycles for a wireless sensor networks.
+Scheduler Algorithm (initially written as a part of the SLEEP protocol) - the energy efficient codewords with varying duty cycles for a wireless sensor network.
 
 ```
 Example code of [3,2,3] with duty cycle 66.6%
