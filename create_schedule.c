@@ -38,8 +38,6 @@ void print_binary_code(int matrix[size][size])
 	int m,n;
 	int p,q;
 	int value;
-	int x,y;
-	int lowtriangle[size][size];
 	int binmat[size][sizebinary];
 
 	for(p=0;p<size;p++) {
@@ -53,18 +51,14 @@ void print_binary_code(int matrix[size][size])
 	//printf("Extracting the lower triangular matrix, and separating the positions.\n");
 	for(n=0; n<size; n++) {
 		for(m=0; m<size; m++) {
-				//value = matrix[m][n];
 				if(m<=n) {
 					value = 0;
 				}else {
 					value = 1;
 				}
-				lowtriangle[m][n] = value;
 				if(value==1) {
 					//printf("m %d :p %d, n %d :q %d \t", m,p,n,q);
 					//printf("%d,%d  ", m+1,n+1);
-					x = m;
-					y = n;
 					binmat[m][q]=value;
 					binmat[n][q]=value;
 					q++;
@@ -74,8 +68,6 @@ void print_binary_code(int matrix[size][size])
 	}
 	printf("---------------------------------------------------------------------------------------------------------------------------\n");
 	print_binmatrix(binmat);
-	
-
 }
  
 
@@ -108,5 +100,6 @@ int main (int argc, char *argv[])
 		printf("---------------------------------------------------------------------------------------------------------------------------\n");
 		return 0;
 	}
+	return 0;
 }	
 
