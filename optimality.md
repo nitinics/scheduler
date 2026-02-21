@@ -1,4 +1,3 @@
-`optimality.md` file (or replace the existing one). It should render very well now.
 
 ```markdown
 # Optimality Proof – Scheduler Algorithm
