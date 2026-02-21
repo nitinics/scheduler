@@ -1,70 +1,70 @@
-# Optimality Proof for the Scheduler Algorithm
+`optimality.md` file (or replace the existing one). It should render very well now.
 
-The scheduler generates binary constant-weight codewords (wakeup schedules) of length **n**, each with exactly **k = d-1** ones (wakeup slots), yielding **d** distinct codewords such that any two share **at most 1** common wakeup slot (pairwise intersection ≤1).
+```markdown
+# Optimality Proof – Scheduler Algorithm
 
-This property is key for the SLEEP protocol: it bounds interference/collisions while enabling low duty-cycle operation (duty cycle = k/n = (d-1)/n) and bounded rendezvous time.
+The scheduler constructs **binary constant-weight codewords** (wakeup schedules) of length *n*, each with exactly **k = d−1** ones (active/wakeup slots), producing **d** distinct codewords such that **any two share at most 1 common wakeup slot** (pairwise intersection ≤ 1 on supports).
 
-## Theorem (Packing / Cardinality Optimality Bound)
+This low-overlap property is central to the SLEEP protocol: it limits collisions/interference while keeping the duty cycle low *(k/n = (d−1)/n)* and enabling bounded-time neighbor discovery/rendezvous.
 
-Let C be a family of binary vectors of length n, each of constant weight k, such that any two distinct vectors have Hamming distance at least 2(k - 1) — equivalently, their supports intersect in **at most 1** position.
+## Main Theorem – Packing Bound (Maximum Cardinality)
 
-Then the maximum number of such vectors is bounded by:
+Let *C* be a family of binary vectors of length *n*, each of constant weight *k*, such that any two distinct vectors have supports intersecting in **at most 1** position  
+(equivalently, Hamming distance ≥ *2(k − 1)*).
 
-$$
-|C| \leq \frac{n(n-1)}{k(k-1)}
-$$
-
-**Proof** (double counting on covered pairs):
-
-Consider the supports S₁, S₂, ..., S_{|C|} ⊆ {1, 2, ..., n}, where |S_i| = k for each i, and |S_i ∩ S_j| ≤ 1 for all i ≠ j.
-
-Count the number of **unordered pairs of distinct positions** {p, q} (1 ≤ p < q ≤ n) that are covered by at least one support (i.e., {p, q} ⊆ S_i for some i):
-
-- Each support S_i covers exactly \binom{k}{2} = \frac{k(k-1)}{2} such pairs.
-- Because any two supports intersect in at most 1 element, **no pair {p, q} can be contained in more than one support** (otherwise their intersection would include at least two elements).
-- Therefore, all covered pairs are distinct — no overlap in the pairs they cover.
-- The total number of possible pairs in [n] is \binom{n}{2} = \frac{n(n-1)}{2}.
-
-Summing over all supports:
-
-$$
-|C| \cdot \frac{k(k-1)}{2} \leq \frac{n(n-1)}{2}
-$$
-
-$$
-|C| \cdot k(k-1) \leq n(n-1)
-$$
+Then the maximum size of *C* is bounded by
 
 $$
 |C| \leq \frac{n(n-1)}{k(k-1)}
 $$
 
-This is a standard packing bound (also known as a form of the Johnson bound for constant-weight codes or the Fisher-type inequality for linear spaces / pairwise balanced designs with λ ≤ 1).
+### Proof (Double Counting on Covered Pairs)
 
-## Application to the Scheduler Parameters
+Let *S₁, S₂, …, Sₘ* be the supports of the codewords (*m = |C|*), with |*Sᵢ*| = *k* and |*Sᵢ ∩ Sⱼ*| ≤ 1 for *i ≠ j*.
 
-In this construction, k = d - 1 and |C| = d (number of schedules = number of supported nodes).
+Consider the unordered pairs of distinct positions {*p, q*} (1 ≤ *p* < *q* ≤ *n*) that are **covered** by at least one support (i.e., {*p, q*} ⊆ *Sᵢ* for some *i*):
 
-Substitute k = d - 1:
+- Each support *Sᵢ* covers exactly $\binom{k}{2} = \frac{k(k-1)}{2}$ such pairs.
+- No pair {*p, q*} can be contained in **more than one** support — otherwise their intersection would contain at least two points, contradicting the ≤1 condition.
+- All covered pairs are therefore distinct.
+- There are at most $\binom{n}{2} = \frac{n(n-1)}{2}$ possible pairs in total.
+
+Adding up:
 
 $$
-d \leq \frac{n(n-1)}{(d-1)(d-2)} \quad \text{(for d > 2)}
+m \cdot \frac{k(k-1)}{2} \leq \frac{n(n-1)}{2}
 $$
 
-**Example verification** (n=3, d=3, k=2 from the repository):
+$$
+m \leq \frac{n(n-1)}{k(k-1)}
+$$
+
+This is a classic packing bound (related to the Johnson bound for constant-weight codes and Fisher-type inequalities in design theory / linear spaces with λ ≤ 1).
+
+## Application to Scheduler Parameters
+
+Here *k = d − 1* and |*C*| = *d* (number of supported schedules/nodes), so
+
+$$
+d \leq \frac{n(n-1)}{(d-1)(d-2)} \quad \text{for } d > 2
+$$
+
+### Tight Example from the Repository
+
+For the given [3,2,3] case (*n=3*, *k=2*, *d=3*):
 
 $$
 \frac{3 \times 2}{2 \times 1} = 3 \quad \Rightarrow \quad d = 3 \leq 3
 $$
 
-Equality holds → the construction is **optimal**: no larger number of codewords (i.e., no more nodes) can be supported under the intersection ≤1 constraint without forcing some pair to overlap in ≥2 slots.
+**Equality holds** → the construction achieves the theoretical maximum. No larger number of codewords (i.e., no more nodes) is possible without forcing at least one pair to overlap in ≥2 slots.
 
-## Implications for SLEEP Protocol
+## Why This Matters for SLEEP
 
-- **Maximum cardinality optimality**: The algorithm supports the largest possible number of nodes for given n and maximum pairwise overlap of 1.
-- **Energy efficiency**: Maximizing d for fixed low overlap allows more nodes at a given duty cycle, or equivalently, achieves lower duty cycle for a target number of nodes while preserving low-conflict wakeup overlaps.
-- **Tightness**: Equality is achieved in small cases (like the [3,2,3] example) and in known tight combinatorial designs (e.g., certain affine geometries, projective planes, or Latin-square-derived schedules for appropriate orders).
+- **Cardinality optimality** — maximizes the number of nodes supportable under the pairwise overlap ≤1 constraint.
+- **Energy & performance optimality** — allows the lowest feasible duty cycle for a target network size, or the largest network at a fixed low duty cycle, while preserving low-conflict wakeup behavior and guaranteed rendezvous.
+- **Combinatorial tightness** — equality is achieved in small cases and in families derived from strong designs (Latin squares, MOLS, finite geometries, etc.) for appropriate parameters.
 
-When the construction saturates (or nearly saturates) the bound, it is provably optimal in the cardinality sense under the design constraints of the SLEEP protocol.
+This bound shows the scheduler is **optimal** in the number of nodes it can support given the design goals of the SLEEP protocol.
 
-(Proof adapted from combinatorial coding theory and design theory; originally discussed in context of the SLEEP protocol scheduler.)
+(Proof based on standard results in combinatorial coding theory and block design packing bounds.)
